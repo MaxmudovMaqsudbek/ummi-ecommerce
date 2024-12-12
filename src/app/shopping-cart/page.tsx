@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 const ShoppingCart = () => {
 	const [total, setTotal] = useState<number>(0);
 	const [products, setProducts] = useState<ProductType[]>(
-		JSON.parse(localStorage.getItem('carts') as string) || []
+		typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('carts') as string) || [] : []
 	);
 	const [orderMessage, setOrderMessage] = useState<string | null>(null);
 
@@ -59,12 +59,13 @@ const ShoppingCart = () => {
 	};
 
 	useEffect(() => {
-		const total = products.reduce((acc, item) => {
-			return acc + item.price * item.quantity;
-		}, 0);
-
-		setTotal(total);
-	}, [products]);
+		if (products.length > 0) {
+			const total = products.reduce((acc, item) => {
+			  return acc + item.price * item.quantity;
+			}, 0);
+			setTotal(total);
+		  }
+		}, [products]);
 
 	const handleCheckOut = () => {
 		localStorage.removeItem('carts');
